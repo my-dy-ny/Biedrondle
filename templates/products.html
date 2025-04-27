@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="products-page">
+    <!-- Panel sortowania -->
+    <div class="sorting-panel">
+        <form method="get" action="{{ url_for('products') }}" class="sorting-form">
+            <select name="sort" class="sort-dropdown">
+                <option value="name_asc" {% if sort == 'name_asc' %}selected{% endif %}>Alfabetycznie - rosnąco</option>
+                <option value="name_desc" {% if sort == 'name_desc' %}selected{% endif %}>Alfabetycznie - malejąco</option>
+                <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>Cena - rosnąco</option>
+                <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Cena - malejąco</option>
+            </select>
+            <button type="submit" class="sort-button">Sortuj</button>
+        </form>
+    </div>
+
+    <!-- Lista produktów -->
+    <div class="products-container">
+        {% for product in products %}
+        <div class="product-card">
+            <img src="{{ url_for('static', filename='images/products/' + product.zdjecie) }}" alt="{{ product.nazwa }}" class="product-image">
+            <div class="product-info">
+                <p class="product-name">{{ product.nazwa }}</p>
+                <p class="product-price">{{ product.cena }} zł</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
