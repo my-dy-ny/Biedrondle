@@ -336,3 +336,57 @@ body {
 .shake {
   animation: shake 0.5s;
 }
+
+
+
+/* flip animacja */ 
+@keyframes flip-up {
+  0% {
+    transform: rotateX(90deg);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateX(0);
+    opacity: 1;
+  }
+}
+
+.rectangle.flip {
+  animation: flip-up 1.6s ease;
+  transform-origin: bottom;
+  backface-visibility: hidden;
+}
+
+/* alert invalid */ 
+.invalid-popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #111;
+  color: white;
+  padding: 10px 25px;
+  border-radius: 8px;
+  font-family: 'VT323', monospace;
+  font-size: 1.3rem;
+  border: 2px solid red;
+  text-align: center;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.invalid-popup.flip {
+  animation: popup-fade 2.1s ease forwards;
+}
+
+@keyframes popup-fade {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -30%);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
