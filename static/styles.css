@@ -352,7 +352,7 @@ body {
 }
 
 .rectangle.flip {
-  animation: flip-up 1.6s ease;
+  animation: flip-up 1s ease;
   transform-origin: bottom;
   backface-visibility: hidden;
 }
@@ -377,7 +377,7 @@ body {
 }
 
 .invalid-popup.flip {
-  animation: popup-fade 2.1s ease forwards;
+  animation: popup-fade 1s ease forwards;
 }
 
 @keyframes popup-fade {
