@@ -2,11 +2,42 @@
 
 {% block content %}
 
-<p1>Niniejsza gra została napisana w celach edukacyjnych w ramach pracy inżynierskiej pod tematem "Zaprojektowanie i zbudowanie gry Biedrondle". </br>
-Gra nie podlega monetyzacji, a co za tym idzie, nie są czerpane z niej żadne korzyści materialne. </br>
-Wszystkie zdjęcia i ceny są własnością JERONIMO MARTINS POLSKA SPÓŁKA AKCYJNA.
-</p1>
+<div class="content">
+    <h2>Zasady gry</h2>
+    <p style="monospace; font-size: 1.3rem;">
+        Celem gry jest odgadnięcie ceny wyświetlanego produktu. Masz 6 prób, aby jak najdokładniej podać kwotę.
+        <br>Po każdej próbie zobaczysz informację, czy Twoja propozycja jest:
+      </p>
+      <p style="font-family: 'VT323', monospace; font-size: 1.3rem; margin-left: 20px;">
+        <b style="color: red;">Czerwona</b> — daleko od właściwej ceny<br>
+        <b style="color: yellow;">Żółta</b> — blisko (do 2zł)<br>
+        <b style="color: green;">Zielona</b> — bardzo blisko lub trafiona (do 10 groszy)
+      </p>
+    
+      <h2 style="font-family: 'VT323', monospace;">Przykłady:</h2>
+    
+      <div class="rectangle-example" style="text-align: center;">
+        <p style="font-family: 'VT323', monospace;">Przykład 1: Twoja cena 2.00 zł, rzeczywista: 5.99 zł</p>
+        <div class="rectangle" style="background-color: red; display: inline-block;">2.00 zł ↑</div>
+      </div>
+    
+      <div class="rectangle-example" style="text-align: center;">
+        <p style="font-family: 'VT323', monospace;">Przykład 2: Twoja cena 4.20 zł, rzeczywista: 5.99 zł</p>
+        <div class="rectangle" style="background-color: yellow; display: inline-block;">4.20 zł ↑</div>
+      </div>
+    
+      <div class="rectangle-example" style="text-align: center;">
+        <p style="font-family: 'VT323', monospace;">Przykład 3: Twoja cena 6.05 zł, rzeczywista: 5.99 zł</p>
+        <div class="rectangle" style="background-color: green; display: inline-block;">6.05 zł ✓</div>
+      </div>
+    </div>
+
+
+  <p1>Niniejsza gra została napisana w celach edukacyjnych w ramach pracy inżynierskiej pod tematem "Zaprojektowanie i zbudowanie gry Biedrondle". </br>
+    Gra nie podlega monetyzacji, a co za tym idzie, nie są czerpane z niej żadne korzyści materialne. </br>
+    Wszystkie zdjęcia i ceny są własnością JERONIMO MARTINS POLSKA SPÓŁKA AKCYJNA.
+    </p1>
+
 
 {% endblock %}
-
 
