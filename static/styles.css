@@ -352,7 +352,7 @@ body {
 }
 
 .rectangle.flip {
-  animation: flip-up 1s ease;
+  animation: flip-up 1.6s ease;
   transform-origin: bottom;
   backface-visibility: hidden;
 }
@@ -377,7 +377,7 @@ body {
 }
 
 .invalid-popup.flip {
-  animation: popup-fade 1s ease forwards;
+  animation: popup-fade 2.1s ease forwards;
 }
 
 @keyframes popup-fade {
@@ -389,4 +389,39 @@ body {
     opacity: 1;
     transform: translate(-50%, -50%);
   }
+}
+
+
+/* przyciski */
+
+.login-submit {
+  font-family: 'VT323', monospace;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  color: black;
+  cursor: pointer;
+  padding: 5px 10px;
+  text-decoration: underline;
+}
+
+.login-submit:hover {
+  color: red;
+}
+
+.produkt-add {
+  font-family: 'VT323', monospace;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  color: black;
+  cursor: pointer;
+  padding: 5px 10px;
+  text-decoration: underline;
+  text-align: center;
+  
+}
+
+.produkt-add:hover {
+  color: red;
 }
