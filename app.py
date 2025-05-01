@@ -79,6 +79,11 @@ def check_price():
         "game_status": game_status,
         "remaining_tries": max(remaining_tries - 1, 0)
     })
+    
+@app.route('/login')
+def login():
+    return redirect(url_for('index'))
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
