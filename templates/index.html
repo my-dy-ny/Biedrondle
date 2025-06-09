@@ -33,37 +33,44 @@
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     const inputField = document.querySelector('.amount-input');
-    const guessButton = document.querySelector('.guess-button');
-    const rectangleList = document.querySelectorAll('.rectangle');
-    const guessCounter = document.getElementById('guess-counter');
-    const productFrame = document.querySelector('.product-card-frame');
-    const correctPrice = {{ cena }};
-
-    // 🔁 Codzienny reset lokalnych danych
-    const today = new Date().toDateString();
-    const storedDay = localStorage.getItem('day');
-    if (storedDay !== today) {
-        localStorage.clear();
-        localStorage.setItem('day', today);
-    }
-
-    // 🔄 Przywracanie poprzednich prób
-    let guesses = JSON.parse(localStorage.getItem('guesses')) || [];
-    let currentTry = guesses.length + 1;
-    let remainingTries = rectangleList.length - guesses.length;
-
-    guesses.forEach((guess, index) => {
-        const rectangle = rectangleList[index];
-        rectangle.textContent = guess.text;
-        rectangle.style.backgroundColor = guess.color;
-    });
-
-    guessCounter.textContent = `Guess: ${currentTry}/${rectangleList.length}`;
-
-    // 🎯 Walidacja pola
     inputField.addEventListener('input', () => {
         inputField.value = inputField.value.replace(/[^0-9.,]/g, '');
     });
+
+    const guessButton = document.querySelector('.guess-button');
+    const rectangleList = document.querySelectorAll('.rectangle');
+    const messageContainer = document.createElement('div');
+    const productContainer = document.querySelector('.product-container');
+    const guessCounter = document.getElementById('guess-counter');
+    const correctPrice = {{ cena }};
+    let remainingTries = rectangleList.length;
+    let currentTry = parseInt(localStorage.getItem('currentTry')) || 1;
+
+    messageContainer.className = "message-container";
+    messageContainer.style.marginTop = "20px";
+    messageContainer.style.fontSize = "1.2rem";
+    productContainer.appendChild(messageContainer);
+
+    const savedGuesses = JSON.parse(localStorage.getItem('guesses') || "[]");
+    savedGuesses.forEach((entry, i) => {
+        const rectangle = rectangleList[i];
+        rectangle.textContent = entry.text;
+        rectangle.style.backgroundColor = entry.color;
+    });
+    guessCounter.textContent = `Guess: ${currentTry}/${rectangleList.length}`;
+
+    const gameStatus = localStorage.getItem('gameStatus');
+    if (gameStatus === 'win') {
+        inputField.style.display = "none";
+        guessButton.style.display = "none";
+        guessCounter.innerHTML = `🎉 Wygrałeś! Gratulacje!<br>Cena: ${correctPrice.toFixed(2)} zł`;
+        guessCounter.style.color = "green";
+    } else if (gameStatus === 'lose') {
+        inputField.style.display = "none";
+        guessButton.style.display = "none";
+        guessCounter.innerHTML = `❌ Przegrałeś!<br>Cena: ${correctPrice.toFixed(2)} zł`;
+        guessCounter.style.color = "red";
+    }
 
     const handleGuess = () => {
         let userPrice = inputField.value.replace(',', '.');
@@ -90,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(response => response.json())
         .then(data => {
             const { difference, direction, game_status } = data;
+            const productFrame = document.querySelector('.product-card-frame');
 
             if (game_status !== "win" && game_status !== "lose") {
                 productFrame.classList.add('shake');
@@ -102,14 +110,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 const rectangle = rectangleList[currentTry - 1];
                 let color = "red";
                 let text = `${userPrice.toFixed(2)} zł ${direction === 'down' ? '↓' : '↑'}`;
-
                 if (difference < 0.10) {
                     color = "green";
                     text = `${userPrice.toFixed(2)} zł ✓`;
                 } else if (difference <= 2) {
                     color = "yellow";
                 }
-
                 rectangle.textContent = text;
                 rectangle.style.backgroundColor = color;
                 rectangle.classList.add('flip');
@@ -117,28 +123,29 @@ document.addEventListener("DOMContentLoaded", () => {
                     rectangle.classList.remove('flip');
                 }, { once: true });
 
-                // 💾 Zapisz do localStorage
-                guesses.push({ text, color });
-                localStorage.setItem('guesses', JSON.stringify(guesses));
-
+                savedGuesses.push({ text, color });
+                localStorage.setItem('guesses', JSON.stringify(savedGuesses));
                 currentTry++;
-                remainingTries--;
+                localStorage.setItem('currentTry', currentTry);
             }
 
+            guessCounter.textContent = `Guess: ${currentTry}/${rectangleList.length}`;
+
             if (game_status === "win") {
+                localStorage.setItem('gameStatus', 'win');
                 inputField.style.display = "none";
                 guessButton.style.display = "none";
                 guessCounter.innerHTML = `🎉 Wygrałeś! Gratulacje!<br>Cena: ${correctPrice.toFixed(2)} zł`;
                 guessCounter.style.color = "green";
             } else if (game_status === "lose") {
+                localStorage.setItem('gameStatus', 'lose');
                 inputField.style.display = "none";
                 guessButton.style.display = "none";
                 guessCounter.innerHTML = `❌ Przegrałeś!<br>Cena: ${correctPrice.toFixed(2)} zł`;
                 guessCounter.style.color = "red";
-            } else {
-                guessCounter.textContent = `Guess: ${currentTry}/${rectangleList.length}`;
             }
 
+            remainingTries--;
             inputField.value = '';
         })
         .catch(error => console.error('Error:', error));
@@ -146,7 +153,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     guessButton.addEventListener('click', handleGuess);
     inputField.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') handleGuess();
+        if (event.key === 'Enter') {
+            handleGuess();
+        }
     });
 });
 </script>
