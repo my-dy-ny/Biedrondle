@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=VT323&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="navbar-container">
+      <ul class="navbar-links">
+          <li><a href="{{ url_for('about') }}">?</a></li>
+          <li>
+            <a href="{{ url_for('index') }}">
+              <span style="color: red;">BIEDRON</span><span style="color: rgb(250, 239, 239);">DLE</span>
+            </a>
+          </li>
+          <li><a href="{{ url_for('login') }}"> <img src="{{ url_for('static', filename='images/login_logo.png') }}" alt="login" width="45" length="45"> </a></li>
+          <!--<li><a href="{{ url_for('products') }}">Baza Danych</a></li>-->
+      </ul>
+
+      <div class="navbar-logos">
+          <a href="https://zakupy.biedronka.pl/artykuly-spozywcze/" target="_blank">
+              <img src="{{ url_for('static', filename='images/biedronka_logo.png') }}" alt="Logo Biedronki" class="navbar-logo">
+          </a>
+          <a href="https://wwsi.edu.pl/" target="_blank">
+              <img src="{{ url_for('static', filename='images/wwsi_logo.png') }}" alt="Logo WWSI" class="navbar-logo">
+          </a>
+      </div>
+
+    </div>
+  </nav>
+
+  <div class="content">
+      {% block content %}{% endblock %}
+  </div>
+
+</body>
+</html>
