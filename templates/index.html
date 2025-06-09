@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'strona_glowna.html' %}
 
 {% block content %}
 <div class="product-container">
@@ -14,7 +14,6 @@
 
     <div class="rectangle-list" id="guess-list" style="position: relative;">
         <div id="invalid-popup" class="invalid-popup" style="display: none;"> Niepoprawna wartość!</div>
-        
         <div class="rectangle"></div>
         <div class="rectangle"></div>
         <div class="rectangle"></div>
@@ -30,139 +29,160 @@
 
 </div>
 
-  </div>
   
-  <script>
-      document.addEventListener("DOMContentLoaded", () => {
-          const inputField = document.querySelector('.amount-input');
-          inputField.addEventListener('input', () => {
-              // Tylko cyfry, kropki i przecinki
-              inputField.value = inputField.value.replace(/[^0-9.,]/g, '');
-          });
-  
-          const guessButton = document.querySelector('.guess-button');
-          const rectangleList = document.querySelectorAll('.rectangle');
-          const messageContainer = document.createElement('div');
-          const productContainer = document.querySelector('.product-container');
-          const guessCounter = document.getElementById('guess-counter');
-          const correctPrice = {{ cena }};
-          let remainingTries = rectangleList.length;
-          let currentTry = 1; // Rozpoczynamy od 1, żeby było Guess: 1/6
-  
-          // Przygotowanie kontenera na wiadomości
-          messageContainer.className = "message-container";
-          messageContainer.style.marginTop = "20px";
-          messageContainer.style.fontSize = "1.2rem";
-          productContainer.appendChild(messageContainer);
-  
-          // Ustawiamy od razu Guess 1/6
-          guessCounter.textContent = `Guess: 1/${rectangleList.length}`;
-  
-          inputField.value = '';
-  
-          const handleGuess = () => {
-              let userPrice = inputField.value.replace(',', '.');
-              userPrice = parseFloat(userPrice);
-  
-              if (isNaN(userPrice)) {
-                  const popup = document.getElementById('invalid-popup');
-                  popup.style.display = "block";
-                  popup.classList.add("flip");
-  
-                  // usuń klasę shake po animacji
-                  popup.addEventListener('animationend', () => {
-                      popup.classList.remove("flip");
-                  }, { once: true });
-  
-                  // schowaj po 2 sekundach
-                  setTimeout(() => {
-                      popup.style.display = "none";
-                  }, 2000);
-  
-                  return;
-              }
-  
-              fetch('/check_price', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ price: userPrice, correct_price: correctPrice, remaining_tries: remainingTries })
-              })
-              .then(response => response.json())
-              .then(data => {
-                  const { difference, direction, game_status } = data;
-                  const productFrame = document.querySelector('.product-card-frame');
-  
-                  // Jeśli odpowiedź błędna (czyli NIE wygrana ani przegrana)
-                  if (game_status !== "win" && game_status !== "lose") {
-                      productFrame.classList.add('shake');
-  
-                      // Usuwamy klasę shake po zakończeniu animacji (żeby można było trząść wielokrotnie)
-                      productFrame.addEventListener('animationend', () => {
-                          productFrame.classList.remove('shake');
-                      }, { once: true });
-                  }
-  
-                  if (currentTry <= rectangleList.length) {
-                      const rectangle = rectangleList[currentTry - 1]; // Pobieramy odpowiedni prostokąt
-  
-                      rectangle.textContent = `${userPrice.toFixed(2)} zł ${direction === 'down' ? '↓' : '↑'}`;
-  
-                      // Animacja flip-up dla prostokąta
-                      rectangle.classList.add('flip');
-                      rectangle.addEventListener('animationend', () => {
-                          rectangle.classList.remove('flip');
-                      }, { once: true });
-  
-                      // Kolorowanie prostokąta w zależności od trafności ceny
-                      if (difference < 0.10) {
-                          rectangle.style.backgroundColor = "green";
-                          rectangle.textContent = `${userPrice.toFixed(2)} zł ✓`;
-                      } else if (difference <= 2) {
-                          rectangle.style.backgroundColor = "yellow";
-                          rectangle.textContent = `${userPrice.toFixed(2)} zł ${direction === 'down' ? '↓' : '↑'}`;
-                      } else {
-                          rectangle.style.backgroundColor = "red";
-                          rectangle.textContent = `${userPrice.toFixed(2)} zł ${direction === 'down' ? '↓' : '↑'}`;
-                      }
-  
-                      currentTry++;
-                  }
-  
-                  // Aktualizacja licznika prób
-                  guessCounter.textContent = `Guess: ${currentTry}/${rectangleList.length}`;
-  
-                  if (game_status === "win") {
-                      // Obsługa wygranej
-                      inputField.style.display = "none";
-                      guessButton.style.display = "none";
-                      guessCounter.innerHTML = `🎉 Wygrałeś! Gratulacje!<br>Cena: ${correctPrice.toFixed(2)} zł`;
-                      guessCounter.style.color = "green";
-                  } else if (game_status === "lose") {
-                      // Obsługa przegranej
-                      inputField.style.display = "none";
-                      guessButton.style.display = "none";
-                      guessCounter.innerHTML = `❌ Przegrałeś!<br>Cena: ${correctPrice.toFixed(2)} zł`;
-                      guessCounter.style.color = "red";
-                  } else {
-                      // Jeśli gra nadal trwa
-                      guessCounter.textContent = `Guess: ${currentTry}/${rectangleList.length}`;
-                  }
-  
-                  remainingTries--;
-                  inputField.value = '';
-              })
-              .catch(error => console.error('Error:', error));
-          };
-  
-          // Obsługa kliknięcia przycisku "Odgadnij"
-          guessButton.addEventListener('click', handleGuess);
-  
-          // Obsługa klawisza Enter w polu input
-          inputField.addEventListener('keydown', (event) => {
-              if (event.key === 'Enter') {
-                  handleGuess();
-              }
-          });
-      });
-  </script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const inputField = document.querySelector('.amount-input');
+        inputField.addEventListener('input', () => {
+            // Tylko cyfry, kropki i przecinki
+            inputField.value = inputField.value.replace(/[^0-9.,]/g, '');
+        });
+    
+        const guessButton = document.querySelector('.guess-button');
+        const rectangleList = document.querySelectorAll('.rectangle');
+        const messageContainer = document.createElement('div');
+        const productContainer = document.querySelector('.product-container');
+        const guessCounter = document.getElementById('guess-counter');
+        const correctPrice = {{ cena }};
+        const todayKey = `biedrondle_${new Date().toDateString()}`;
+        let remainingTries = rectangleList.length;
+        let currentTry = 1; // Rozpoczynamy od 1, żeby było Guess: 1/6
+    
+        // Przygotowanie kontenera na wiadomości
+        messageContainer.className = "message-container";
+        messageContainer.style.marginTop = "20px";
+        messageContainer.style.fontSize = "1.2rem";
+        productContainer.appendChild(messageContainer);
+    
+        // Ustawiamy od razu Guess 1/6
+        guessCounter.textContent = `Guess: 1/${rectangleList.length}`;
+        inputField.value = '';
+    
+        function loadPreviousGuesses() {
+            const saved = JSON.parse(localStorage.getItem(todayKey)) || [];
+            for (let i = 0; i < saved.length && i < rectangleList.length; i++) {
+                const g = saved[i];
+                const r = rectangleList[i];
+                r.textContent = `${g.price.toFixed(2)} zł ${g.mark}`;
+                r.style.backgroundColor = g.color;
+            }
+
+            currentTry = saved.length + 1;
+            remainingTries = rectangleList.length - saved.length;
+
+            // Sprawdź wygraną lub przegraną
+            const isWin = saved.some(g => g.color === "green");
+            const isLose = saved.length === rectangleList.length && !isWin;
+
+            if (isWin) {
+                inputField.style.display = "none";
+                guessButton.style.display = "none";
+                guessCounter.innerHTML = `🎉 Wygrałeś! Gratulacje!<br>Cena: ${correctPrice.toFixed(2)} zł`;
+                guessCounter.style.color = "green";
+            } else if (isLose) {
+                inputField.style.display = "none";
+                guessButton.style.display = "none";
+                guessCounter.innerHTML = `❌ Przegrałeś!<br>Cena: ${correctPrice.toFixed(2)} zł`;
+                guessCounter.style.color = "red";
+            } else {
+                guessCounter.textContent = `Guess: ${currentTry}/${rectangleList.length}`;
+            }
+        }
+    
+        const handleGuess = () => {
+            let userPrice = inputField.value.replace(',', '.');
+            userPrice = parseFloat(userPrice);
+    
+            if (isNaN(userPrice)) {
+                const popup = document.getElementById('invalid-popup');
+                popup.style.display = "block";
+                popup.classList.add("flip");
+    
+                // usuń klasę flip po animacji
+                popup.addEventListener('animationend', () => {
+                    popup.classList.remove("flip");
+                }, { once: true });
+    
+                // schowaj po 2 sekundach
+                setTimeout(() => {
+                    popup.style.display = "none";
+                }, 2000);
+    
+                return;
+            }
+    
+            fetch('/check_price', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ price: userPrice, correct_price: correctPrice, remaining_tries: remainingTries })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const { difference, direction, game_status } = data;
+                const productFrame = document.querySelector('.product-card-frame');
+    
+                // Jeśli odpowiedź błędna (czyli NIE wygrana ani przegrana)
+                if (game_status !== "win" && game_status !== "lose") {
+                    productFrame.classList.add('shake');
+                    productFrame.addEventListener('animationend', () => {
+                        productFrame.classList.remove('shake');
+                    }, { once: true });
+                }
+    
+                if (currentTry <= rectangleList.length) {
+                    const rectangle = rectangleList[currentTry - 1];
+    
+                    rectangle.textContent = `${userPrice.toFixed(2)} zł ${direction === 'down' ? '↓' : '↑'}`;
+                    rectangle.classList.add('flip');
+                    rectangle.addEventListener('animationend', () => {
+                        rectangle.classList.remove('flip');
+                    }, { once: true });
+    
+                    // kolor + zapis
+                    let color = "red";
+                    let mark = direction === 'down' ? '↓' : '↑';
+                    if (difference < 0.10) {
+                        color = "green";
+                        mark = "✓";
+                    } else if (difference <= 2) {
+                        color = "yellow";
+                    }
+    
+                    rectangle.style.backgroundColor = color;
+                    rectangle.textContent = `${userPrice.toFixed(2)} zł ${mark}`;
+                    saveGuessLocally({ price: userPrice, color: color, mark: mark });
+    
+                    currentTry++;
+                }
+    
+                guessCounter.textContent = `Guess: ${currentTry}/${rectangleList.length}`;
+    
+                if (game_status === "win") {
+                    inputField.style.display = "none";
+                    guessButton.style.display = "none";
+                    guessCounter.innerHTML = `🎉 Wygrałeś! Gratulacje!<br>Cena: ${correctPrice.toFixed(2)} zł`;
+                    guessCounter.style.color = "green";
+                } else if (game_status === "lose") {
+                    inputField.style.display = "none";
+                    guessButton.style.display = "none";
+                    guessCounter.innerHTML = `❌ Przegrałeś!<br>Cena: ${correctPrice.toFixed(2)} zł`;
+                    guessCounter.style.color = "red";
+                }
+    
+                remainingTries--;
+                inputField.value = '';
+            })
+            .catch(error => console.error('Error:', error));
+        };
+    
+        guessButton.addEventListener('click', handleGuess);
+        inputField.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                handleGuess();
+            }
+        });
+    
+        loadPreviousGuesses(); // <- Załaduj zapisane zgadywania
+    });
+    </script>
 {% endblock %}
